@@ -7,8 +7,11 @@ const User = require('../models/User.js');
 const bcrypt = require('bcrypt');
 
 //Welcome
-router.get('/', (req, res) => {
-  res.send('Welcome to the user page');
+router.get('/', async (req, res, next) => {
+  return res.status(200).json({
+    title: 'Express Testing',
+    message: 'The app is working properly!',
+  });
 });
 
 //health check
