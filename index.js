@@ -3,15 +3,13 @@ require('./config/db.js');
 
 // Import packages
 const express = require('express');
-const home = require('./routes/home');
-const UserRouter = require('./routes/User.js');
+const UserRouter = require('./api/User.js');
 
 // Middlewares
 const app = express();
 app.use(express.json());
 
 // Routes
-app.use('/home', home);
 app.use('/user', UserRouter);
 
 // connection

@@ -15,8 +15,11 @@ router.get('/', async (req, res, next) => {
 });
 
 //health check
-router.get('/health', (req, res) => {
-  res.send('User API is healthy');
+router.get('/health', async (req, res, next) => {
+  return res.status(200).json({
+    title: 'HEASLTH CHECK',
+    message: 'The app is working properly!',
+  });
 });
 
 //Signup
