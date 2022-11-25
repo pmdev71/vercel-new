@@ -3,8 +3,39 @@ const router = express.Router();
 //mongoose user model
 const User = require('../models/User.js');
 
+//mongoose UserVerification model
+const UserVerification = require('../models/UserVerification.js');
+
+//email handler
+const nodeMailer = require('nodemailer');
+
+//unique string generator
+const { v4: uuidv4 } = require('uuid');
+
+//env variables
+require('dotenv').config();
+
 //password hashing
 const bcrypt = require('bcrypt');
+
+// nodemailer stuff
+let transporter = nodeMailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.AUTH_EMAIL,
+    pass: process.env.AUTH_PASS,
+  },
+});
+
+//testing success
+transporter.verify((error, success) => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Server is ready to take our messages');
+    console.log(success);
+  }
+});
 
 //Welcome
 router.get('/', async (req, res, next) => {
@@ -73,15 +104,13 @@ router.post('/signup', (req, res) => {
                 email,
                 password: hashPassword,
                 dateOfBirth,
+                verified: false,
               });
               newUser
                 .save()
                 .then((result) => {
-                  return res.status(200).json({
-                    status: 'Success',
-                    msg: 'Signup successful!',
-                    data: result,
-                  });
+                  //handle account verification
+                  sendVerificationEmail(result, res);
                 })
                 .catch((err) => {
                   return res.status(500).json({
@@ -107,6 +136,71 @@ router.post('/signup', (req, res) => {
       });
   }
 });
+
+//send verification email
+const sendVerificationEmail = ({ _id, email }, res) => {
+  //url to be used in email
+  const currentUrl = 'http://localhost:9002/';
+  //generate unique string
+  const uniqueString = uuidv4() + _id;
+  //mail options
+  const mailOptions = {
+    from: process.env.AUTH_EMAIL,
+    to: email,
+    subject: 'Account Verification',
+    html: `Verify your account by clicking <a href="${
+      currentUrl + 'user/verify/' + _id + '/' + uniqueString
+    }">here</a>`,
+  };
+
+  //hash unique string
+  const saltRounds = 10;
+  bcrypt.hash(uniqueString, saltRounds).then((hashUniqueString) => {
+    //set values in UserVerification collection
+    const newVerification = new UserVerification({
+      userId: _id,
+      uniqueString: hashUniqueString,
+      createAt: Date.now(),
+      expiresAt: Date.now() + 3600000,
+    });
+
+    newVerification
+      .save()
+      .then((result) => {
+        transporter
+          .sendMail(mailOptions)
+          .then((result) => {
+            //email sent and verification data saved
+            return res.status(200).json({
+              status: 'Success',
+              msg: 'Verification email sent!',
+            });
+          })
+          .catch((err) => {
+            return res.status(500).json({
+              status: 'Failed',
+              msg: 'Verification email sent failed!',
+            });
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json({
+          status: 'Failed',
+          msg: 'Could not save verification email data !',
+        });
+      })
+
+      .catch((err) => {
+        res.json({
+          status: 'Failed',
+          msg: 'Error while hashing unique string!',
+        });
+      });
+  });
+};
+
+//verify Email
 
 //Signin
 router.post('/signin', (req, res) => {
