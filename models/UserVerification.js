@@ -6,18 +6,19 @@ const UserVerificationSchema = new Schema({
     type: String,
     required: true,
   },
-  uniqueString: {
+  userEmail: {
     type: String,
     required: true,
+  },
+  uniqueString: {
+    type: String,
   },
 
   createAt: {
     type: Date,
-    required: true,
   },
-  expartAt: {
+  expiresAt: {
     type: Date,
-    required: true,
   },
 });
 
