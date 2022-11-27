@@ -1,8 +1,11 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 
+const MONGODB_URI =
+  'mongodb+srv://login_server_user:oJojLUZ2oUtMKBQ9@loginservercluster.sdvbifp.mongodb.net/?retryWrites=true&w=majority';
+
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

@@ -21,12 +21,15 @@ const bcrypt = require('bcrypt');
 //path for static verification page
 const path = require('path');
 
+const AUTH_EMAIL = 'pmdev71@gmail.com';
+const AUTH_PASS = 'ffdepgcgsuothxah';
+
 // nodemailer stuff
 let transporter = nodeMailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.AUTH_EMAIL,
-    pass: process.env.AUTH_PASS,
+    user: AUTH_EMAIL,
+    pass: AUTH_PASS,
   },
 });
 
