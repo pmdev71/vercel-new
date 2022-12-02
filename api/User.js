@@ -65,9 +65,9 @@ router.post('/signup', (req, res) => {
   name = name.trim();
   email = email.trim();
   password = password.trim();
-  dateOfBirth = dateOfBirth.trim();
+  dateOfBirth = dateOfBirth?.trim();
 
-  if (!name || !email || !password || !dateOfBirth) {
+  if (!name || !email || !password) {
     return res
       .status(400)
       .json({ status: 'Failed', msg: 'Empty input fields!' });
