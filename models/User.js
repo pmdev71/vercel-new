@@ -16,7 +16,7 @@ const UserSchema = new Schema({
   },
   dateOfBirth: {
     type: Date,
-    required: true,
+    default: Date.now - 18 * 365 * 24 * 60 * 60 * 1000,
   },
   verified: {
     type: Boolean,
