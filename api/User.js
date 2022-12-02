@@ -84,11 +84,13 @@ router.post('/signup', (req, res) => {
     return res
       .status(400)
       .json({ status: 'Failed', msg: 'Invalid email address!' });
-  } else if (!new Date(dateOfBirth).getTime()) {
-    return res
-      .status(400)
-      .json({ status: 'Failed', msg: 'Invalid date of birth!' });
-  } else {
+  }
+  // else if (!new Date(dateOfBirth).getTime()) {
+  //   return res
+  //     .status(400)
+  //     .json({ status: 'Failed', msg: 'Invalid date of birth!' });
+  // }
+  else {
     //check if email already exists
     User.find({ email })
       .then((result) => {
