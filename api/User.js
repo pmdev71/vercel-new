@@ -324,8 +324,8 @@ router.post('/signin', (req, res) => {
 
           if (!data[0].verified) {
             res.json({
-              status: 'Failed',
-              msg: 'Email hasnot been verified yeat. Please, check your inbox!',
+              status: 'Pending',
+              msg: 'Email hasnot been verified yeat. Please, check your mail inbox!',
             });
           } else {
             //check password
